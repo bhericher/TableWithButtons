@@ -1,0 +1,93 @@
+<DesignerComponent>
+	<Header>
+		<Name>Table With buttons Component</Name>
+		<IName>TableWithButtons</IName>
+		<Description>table with buttons Component</Description>
+		<Category>BOOTSTRAPCOMPONENTS</Category>
+		<CatDescription>Bootstrap</CatDescription>
+		<Type>PalleteEntry</Type>
+		<Version>1.0</Version>
+	</Header>
+	<Contents>
+		<Model>
+			<Property>htmlObject</Property>
+			<Property>listeners</Property>
+			<Property name="parameters">xActionArrayParameter</Property>
+			<Definition name="chartDefinition">
+				<Property>dataSource</Property>
+				<Property name="clickAction">cccClickAction</Property>
+				<Property name="colHeaders">colHeaders</Property>
+				<Property name="colTypes">colTypes</Property>
+				<Property name="colFormats">colFormats</Property>
+				<Property name="colWidths">colWidths</Property>
+				<Property name="colSortable">colSortable</Property>
+				<Property name="colSearchable">colSearchable</Property>
+				<Property name="paginate">paginate</Property>
+				<Property>paginateServerside</Property>
+				<Property name="paginationType">paginationType</Property>
+				<Property name="filter">filter</Property>
+				<Property name="info">info</Property>
+				<Property name="sort">sort</Property>
+				<Property name="sortBy">sortBy</Property>
+				<Property name="displayLength">displayLength</Property>
+				<Property name="lengthChange">lengthChange</Property>
+				<Property name="tableStyle">tableStyle</Property>
+				<Property>drawCallback</Property>
+				<Property name="sDom">sDom</Property>
+				<Property name="oLanguage">oLanguage</Property>
+			</Definition>
+			<Property>Orientation</Property>
+			<Property>executeAtStart</Property>
+			<Property>preChange</Property>
+			<Property>postChange</Property>
+			<Property>postFetch</Property>
+			<Property>preExecution</Property>
+			<Property>postExecution</Property>
+			<Property>refreshPeriod</Property>
+			<Property>tooltip</Property>
+			<Property>extraOptions</Property>
+			<Property>expandParameters</Property>
+			<Property>expandOnClick</Property>
+			<Property>expandContainerObject</Property>			
+		</Model>
+		<Implementation>
+            <Code src="TableWithButtons.js" />            
+            <Styles>
+				<Style  src="DataTables-1.10.10/css/jquery.dataTables.min.css">DataTables</Style>
+				<Style  src="DataTables-1.10.10/css/dataTables.bootstrap.min.css">DataTablesBootstrap</Style>
+				<Style  src="Buttons/css/buttons.dataTables.min.css">Buttons</Style>
+	      	</Styles>
+            <Dependencies>
+			    <Dependency src="DataTables-1.10.10/js/jquery.dataTables.js">DataTables</Dependency>
+				<Dependency src="Buttons/js/dataTables.buttons.js">Buttons</Dependency>
+		    	<Dependency src="Buttons/js/buttons.flash.js">Flash</Dependency>	    	
+				<Dependency src="JSZip/jszip.js">JsZip</Dependency>	
+				<Dependency src="pdfmake/build/pdfmake.js">Pdfmake</Dependency>	
+				<Dependency src="pdfmake/build/vfs_fonts.js">vfsfonts</Dependency>
+				<Dependency src="Buttons/js/buttons.html5.js">html5</Dependency>	 
+				<Dependency src="Buttons/js/buttons.print.js">print</Dependency>	 		
+				<Dependency src="Buttons/js/buttons.colVis.js">colVis</Dependency>	 							
+		    </Dependencies>
+            <CustomProperties>
+				<DesignerProperty>
+					<Header>
+						<Name>Orientation</Name>
+							<Parent>BaseProperty</Parent>
+							<DefaultValue>portrait</DefaultValue>
+							<Description>Page orientation</Description>
+							<Tooltip>Portrait or landscape</Tooltip>
+							<Advanced>false</Advanced>
+							<InputType type="valuelist"/>
+							<OutputType>String</OutputType>
+							<Order>40</Order>
+							<Version>1.0</Version>
+					</Header>
+					<Values>
+						<Value display="portrait">portrait</Value>
+						<Value display="landscape">landscape</Value>
+					</Values>
+				</DesignerProperty>
+            </CustomProperties>
+        </Implementation>
+	</Contents>
+</DesignerComponent>
