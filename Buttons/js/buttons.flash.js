@@ -151,6 +151,7 @@ ZeroClipboard_TableTools.Client.prototype = {
 	cssEffects: true, // enable CSS mouse effects on dom container
 	handlers: null, // user event handlers
 	sized: false,
+	sheetName: '', // default sheet name for excel export
 
 	glue: function(elem, title) {
 		// glue to DOM element
@@ -303,6 +304,14 @@ ZeroClipboard_TableTools.Client.prototype = {
 		this.fileName = newText;
 		if (this.ready) {
 			this.movie.setFileName(newText);
+		}
+	},
+
+	setSheetName: function(newText) {
+		// set sheet name, for excel
+		this.sheetName = newText;
+		if (this.ready) {
+			this.movie.setSheetName(newText);
 		}
 	},
 
@@ -492,6 +501,10 @@ var _filename = function ( config, incExtension )
 		config.title :
 		config.filename;
 
+	if ( typeof filename === 'function' ) {
+		filename = filename();
+	}
+
 	if ( filename.indexOf( '*' ) !== -1 ) {
 		filename = filename.replace( '*', $('title').text() );
 	}
@@ -505,6 +518,22 @@ var _filename = function ( config, incExtension )
 };
 
 /**
+ * Get the sheet name for Excel exports.
+ *
+ * @param {object}  config       Button configuration
+ */
+var _sheetname = function ( config )
+{
+	var sheetName = 'Sheet1';
+
+	if ( config.sheetName ) {
+		sheetName = config.sheetName.replace(/[\[\]\*\/\\\?\:]/g, '');
+	}
+
+	return sheetName;	
+};
+
+/**
  * Get the title for an exported file.
  *
  * @param {object}  config  Button configuration
@@ -512,6 +541,10 @@ var _filename = function ( config, incExtension )
 var _title = function ( config )
 {
 	var title = config.title;
+
+	if ( typeof title === 'function' ) {
+		title = title();
+	}
 
 	return title.indexOf( '*' ) !== -1 ?
 		title.replace( '*', $('title').text() ) :
@@ -591,7 +624,7 @@ var _exportData = function ( dt, config )
 	};
 
 	var header = config.header ? join( data.header )+newLine : '';
-	var footer = config.footer ? newLine+join( data.footer ) : '';
+	var footer = config.footer && data.footer ? newLine+join( data.footer ) : '';
 	var body = [];
 
 	for ( var i=0, ien=data.body.length ; i<ien ; i++ ) {
@@ -688,9 +721,12 @@ DataTable.ext.buttons.copyFlash = $.extend( {}, flashButton, {
 
 		var flash = config._flash;
 		var data = _exportData( dt, config );
+		var output = config.customize ?
+			config.customize( data.str, config ) :
+			data.str;
 
 		flash.setAction( 'copy' );
-		_setText( flash, data.str ); 
+		_setText( flash, output ); 
 
 		dt.buttons.info(
 			dt.i18n( 'buttons.copyTitle', 'Copy to clipboard' ),
@@ -719,10 +755,13 @@ DataTable.ext.buttons.csvFlash = $.extend( {}, flashButton, {
 		// Set the text
 		var flash = config._flash;
 		var data = _exportData( dt, config );
+		var output = config.customize ?
+			config.customize( data.str, config ) :
+			data.str;
 
 		flash.setAction( 'csv' );
 		flash.setFileName( _filename( config ) );
-		_setText( flash, data.str );
+		_setText( flash, output );
 	},
 
 	escapeChar: '"'
@@ -749,13 +788,15 @@ DataTable.ext.buttons.excelFlash = $.extend( {}, flashButton, {
 					row[i] = '';
 				}
 
-				cells.push( typeof row[i] === 'number' || (row[i].match && row[i].match(/^-?[0-9\.]+$/) && row[i].charAt(0) !== '0') ?
+				cells.push( typeof row[i] === 'number' || (row[i].match && $.trim(row[i]).match(/^-?\d+(\.\d+)?$/) && row[i].charAt(0) !== '0') ?
 					'<c t="n"><v>'+row[i]+'</v></c>' :
 					'<c t="inlineStr"><is><t>'+(
 						! row[i].replace ?
 							row[i] :
 							row[i]
 								.replace(/&(?!amp;)/g, '&amp;')
+								.replace(/</g, '&lt;')
+								.replace(/>/g, '&gt;')
 								.replace(/[\x00-\x1F\x7F-\x9F]/g, ''))+ // remove control characters
 					'</t></is></c>'                                    // they are not valid in XML
 				);
@@ -778,7 +819,9 @@ DataTable.ext.buttons.excelFlash = $.extend( {}, flashButton, {
 
 		flash.setAction( 'excel' );
 		flash.setFileName( _filename( config ) );
+		flash.setSheetName( _sheetname( config ) );
 		_setText( flash, xml );
+		
 	},
 
 	extension: '.xlsx'

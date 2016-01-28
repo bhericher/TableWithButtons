@@ -1,10 +1,10 @@
 <DesignerComponent>
-	<Header>
-		<Name>Table With buttons Component</Name>
+<Header>
+		<Name>Table With Buttons Component</Name>
 		<IName>TableWithButtons</IName>
-		<Description>table with buttons Component</Description>
-		<Category>BOOTSTRAPCOMPONENTS</Category>
-		<CatDescription>Bootstrap</CatDescription>
+		<Description>table with buttons (pdf, excel,...) Component</Description>
+		<Category>CUSTOMCOMPONENTS</Category>
+		<CatDescription>Custom</CatDescription>
 		<Type>PalleteEntry</Type>
 		<Version>1.0</Version>
 	</Header>
@@ -36,7 +36,8 @@
 				<Property name="sDom">sDom</Property>
 				<Property name="oLanguage">oLanguage</Property>
 			</Definition>
-			<Property>Orientation</Property>
+			<Property>pdfCustomize</Property>
+			<Property>Buttons</Property>
 			<Property>executeAtStart</Property>
 			<Property>preChange</Property>
 			<Property>postChange</Property>
@@ -68,24 +69,34 @@
 				<Dependency src="Buttons/js/buttons.print.js">print</Dependency>	 		
 				<Dependency src="Buttons/js/buttons.colVis.js">colVis</Dependency>	 							
 		    </Dependencies>
-            <CustomProperties>
+             <CustomProperties>
 				<DesignerProperty>
 					<Header>
-						<Name>Orientation</Name>
+						<Name>pdfCustomize</Name>
 							<Parent>BaseProperty</Parent>
-							<DefaultValue>portrait</DefaultValue>
-							<Description>Page orientation</Description>
-							<Tooltip>Portrait or landscape</Tooltip>
+							<DefaultValue></DefaultValue>
+							<Description>Customize pdf</Description>
+							<Tooltip>Function to customize the pdf</Tooltip>
 							<Advanced>false</Advanced>
-							<InputType type="valuelist"/>
-							<OutputType>String</OutputType>
+							<InputType>JavaScript</InputType>
+							<OutputType>Function</OutputType>
 							<Order>40</Order>
 							<Version>1.0</Version>
 					</Header>
-					<Values>
-						<Value display="portrait">portrait</Value>
-						<Value display="landscape">landscape</Value>
-					</Values>
+				</DesignerProperty>
+				<DesignerProperty>
+					<Header>
+						    <Name>Buttons</Name>
+							<Parent>BaseProperty</Parent>
+							<DefaultValue>"[]"</DefaultValue>
+							<Description>Buttons définition</Description>
+							<Tooltip>Define buttons with their options</Tooltip>
+							<Advanced>false</Advanced>
+							<InputType>EditorValuesArray</InputType> 
+							<OutputType>Array</OutputType>
+							<Order>40</Order>
+							<Version>1.0</Version>
+					</Header>
 				</DesignerProperty>
             </CustomProperties>
         </Implementation>

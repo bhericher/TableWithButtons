@@ -254,48 +254,29 @@ var TableWithButtons = UnmanagedComponent.extend({
       sortOptions.push( col + (dir == "asc" ? "A" : "D"));
     }
     this.queryState.setSortBy(sortOptions);
+	var allButtons=[];
+	for (var i=0;i<this.Buttons.length;i++) {
+		   
+				var curbtn = {
+					'extend' : this.Buttons[i][0]
+				};
+				if (this.Buttons[i][1].length > 0) {
+				var curlistopts=this.Buttons[i][1].replace(/(\r\n|\n|\r)/gm,"").split(',');
+					for (var j=0;j<curlistopts.length;j++) {
+						var curopt=curlistopts[j].split(':');
+						var propopt=curopt[0].replace(/\s/g, "") ;
+						var valopt = curopt[1].trimLeft().trimRight();
+						curbtn[propopt]= valopt;
+					}
+				 if ((this.Buttons[i][0] == 'pdf' || this.Buttons[i][0] == 'pdfHtml5') && this.pdfCustomize) {curbtn['customize']=this.pdfCustomize;}
+				}
+				allButtons.push(curbtn);
+			}
+
 	$.fn.dataTable.Buttons.swfPath = '/pentaho/api/repos/pentaho-cdf-dd/resources/custom/components/TableWithButtons/Buttons/swf/flashExport.swf';
 	$.extend(true, $.fn.dataTable.defaults, {
-		
-        buttons: [
-		   {
-                extend: 'copy',
-                exportOptions: {
-                    columns: ':visible'
-                }
-            },
-			{
-                extend: 'csv',
-                exportOptions: {
-                    columns: ':visible'
-                }
-            },
-			{
-                extend: 'excel',
-                exportOptions: {
-                    columns: ':visible'
-                }
-            },
-			{
-                extend: 'print',
-                exportOptions: {
-                    columns: ':visible'
-                }
-            },
-			{
-                extend: 'pdf',
-				extension : '.pdf',
-				orientation : this.Orientation,
-				pageSize : 'A4',
-                exportOptions: {
-                    columns: ':visible'
-					
-                }
-            },
-			'colvis'
-        ]
+		buttons : allButtons
   });
-   
     $('#' +cd["tableId"]).DataTable();
   },
 

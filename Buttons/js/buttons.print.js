@@ -100,12 +100,20 @@ DataTable.ext.buttons.print = {
 		html += '</tbody>';
 
 		if ( config.footer ) {
-			html += '<thead>'+ addRow( data.footer, 'th' ) +'</thead>';
+			html += '<tfoot>'+ addRow( data.footer, 'th' ) +'</tfoot>';
 		}
 
 		// Open a new window for the printable table
 		var win = window.open( '', '' );
-		var title = config.title.replace( '*', $('title').text() );
+		var title = config.title;
+
+		if ( typeof title === 'function' ) {
+			title = title();
+		}
+
+		if ( title.indexOf( '*' ) !== -1 ) {
+			title= title.replace( '*', $('title').text() );
+		}
 
 		win.document.close();
 

@@ -289,6 +289,10 @@ var _filename = function ( config, incExtension )
 		config.title :
 		config.filename;
 
+	if ( typeof filename === 'function' ) {
+		filename = filename();
+	}
+
 	if ( filename.indexOf( '*' ) !== -1 ) {
 		filename = filename.replace( '*', $('title').text() );
 	}
@@ -302,6 +306,22 @@ var _filename = function ( config, incExtension )
 };
 
 /**
+ * Get the sheet name for Excel exports.
+ *
+ * @param {object}  config       Button configuration
+ */
+var _sheetname = function ( config )
+{
+	var sheetName = 'Sheet1';
+
+	if ( config.sheetName ) {
+		sheetName = config.sheetName.replace(/[\[\]\*\/\\\?\:]/g, '');
+	}
+
+	return sheetName;	
+};
+
+/**
  * Get the title for an exported file.
  *
  * @param {object}  config  Button configuration
@@ -309,6 +329,10 @@ var _filename = function ( config, incExtension )
 var _title = function ( config )
 {
 	var title = config.title;
+
+	if ( typeof title === 'function' ) {
+		title = title();
+	}
 
 	return title.indexOf( '*' ) !== -1 ?
 		title.replace( '*', $('title').text() ) :
@@ -367,7 +391,7 @@ var _exportData = function ( dt, config )
 	};
 
 	var header = config.header ? join( data.header )+newLine : '';
-	var footer = config.footer ? newLine+join( data.footer ) : '';
+	var footer = config.footer && data.footer ? newLine+join( data.footer ) : '';
 	var body = [];
 
 	for ( var i=0, ien=data.body.length ; i<ien ; i++ ) {
@@ -424,7 +448,7 @@ var excelStrings = {
 		<workbookView xWindow="0" yWindow="0" windowWidth="25600" windowHeight="19020" tabRatio="500"/>\
 	</bookViews>\
 	<sheets>\
-		<sheet name="Sheet1" sheetId="1" r:id="rId1"/>\
+		<sheet name="__SHEET_NAME__" sheetId="1" r:id="rId1"/>\
 	</sheets>\
 </workbook>',
 
@@ -464,6 +488,11 @@ DataTable.ext.buttons.copyHtml5 = {
 				top: 0,
 				left: 0
 			} );
+
+		if ( config.customize ) {
+			output = config.customize( output, config );
+		}
+
 		var textarea = $('<textarea readonly/>')
 			.val( output )
 			.appendTo( hiddenDiv );
@@ -557,6 +586,10 @@ DataTable.ext.buttons.csvHtml5 = {
 		var output = _exportData( dt, config ).str;
 		var charset = config.charset;
 
+		if ( config.customize ) {
+			output = config.customize( output, config );
+		}
+
 		if ( charset !== false ) {
 			if ( ! charset ) {
 				charset = document.characterSet || document.charset;
@@ -623,15 +656,17 @@ DataTable.ext.buttons.excelHtml5 = {
 
 				// Don't match numbers with leading zeros or a negative anywhere
 				// but the start
-				cells.push( typeof row[i] === 'number' || (row[i].match && row[i].match(/^-?[0-9\.]+$/) && row[i].charAt(0) !== '0') ?
+				cells.push( typeof row[i] === 'number' || (row[i].match && $.trim(row[i]).match(/^-?\d+(\.\d+)?$/) && row[i].charAt(0) !== '0') ?
 					'<c t="n"><v>'+row[i]+'</v></c>' :
 					'<c t="inlineStr"><is><t>'+(
 						! row[i].replace ?
 							row[i] :
 							row[i]
 								.replace(/&(?!amp;)/g, '&amp;')
-								.replace(/[\x00-\x1F\x7F-\x9F]/g, ''))+ // remove control characters
-					'</t></is></c>'                                    // they are not valid in XML
+								.replace(/</g, '&lt;')
+								.replace(/>/g, '&gt;')
+								.replace(/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, ''))+ // remove control characters
+					'</t></is></c>'                                                      // they are not valid in XML
 				);
 			}
 
@@ -658,12 +693,12 @@ DataTable.ext.buttons.excelHtml5 = {
 
 		zip.file(           '[Content_Types].xml', excelStrings['[Content_Types].xml'] );
 		_rels.file(         '.rels',               excelStrings['_rels/.rels'] );
-		xl.file(            'workbook.xml',        excelStrings['xl/workbook.xml'] );
+		xl.file(            'workbook.xml',        excelStrings['xl/workbook.xml'].replace( '__SHEET_NAME__', _sheetname( config ) ) );
 		xl_rels.file(       'workbook.xml.rels',   excelStrings['xl/_rels/workbook.xml.rels'] );
 		xl_worksheets.file( 'sheet1.xml',          excelStrings['xl/worksheets/sheet1.xml'].replace( '__DATA__', xml ) );
 
 		_saveAs(
-			zip.generate( {type:"blob"} ),
+			zip.generate( {type:"blob", mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'} ),
 			_filename( config )
 		);
 	},
@@ -783,7 +818,7 @@ DataTable.ext.buttons.pdfHtml5 = {
 		}
 
 		if ( config.customize ) {
-			config.customize( doc );
+			config.customize( doc, config );
 		}
 
 		var pdf = window.pdfMake.createPdf( doc );

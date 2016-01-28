@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CDADescriptor>
+   <DataSources>
+      <Connection id="qry" type="sql.jndi">
+         <Jndi>SampleData</Jndi>
+      </Connection>
+   </DataSources>
+   <DataAccess access="public" connection="qry" id="qry" type="sql">
+      <Cache duration="3600" enabled="true"/>
+      <Columns/>
+      <Parameters/>
+      <Query><![CDATA[select * from orderfact where YEAR_ID=2003 and MONTH_ID=1]]></Query>
+   </DataAccess>
+</CDADescriptor>
