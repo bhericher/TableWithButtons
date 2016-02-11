@@ -1,5 +1,5 @@
 <DesignerComponent>
-<Header>
+	<Header>
 		<Name>Table With Buttons Component</Name>
 		<IName>TableWithButtons</IName>
 		<Description>table with buttons (pdf, excel,...) Component</Description>
@@ -36,7 +36,7 @@
 				<Property name="sDom">sDom</Property>
 				<Property name="oLanguage">oLanguage</Property>
 			</Definition>
-			<Property>pdfCustomize</Property>
+			<Property>ColReorder</Property>
 			<Property>Buttons</Property>
 			<Property>executeAtStart</Property>
 			<Property>preChange</Property>
@@ -49,51 +49,53 @@
 			<Property>extraOptions</Property>
 			<Property>expandParameters</Property>
 			<Property>expandOnClick</Property>
-			<Property>expandContainerObject</Property>			
+			<Property>expandContainerObject</Property>
 		</Model>
 		<Implementation>
-            <Code src="TableWithButtons.js" />            
+            <Code src="TableWithButtonsComponent.js" />
             <Styles>
-				<Style  src="DataTables-1.10.10/css/jquery.dataTables.min.css">DataTables</Style>
-				<Style  src="DataTables-1.10.10/css/dataTables.bootstrap.min.css">DataTablesBootstrap</Style>
+				<Style src="DataTables/css/dataTables.bootstrap.min.css">DataTables</Style>
 				<Style  src="Buttons/css/buttons.dataTables.min.css">Buttons</Style>
 	      	</Styles>
             <Dependencies>
-			    <Dependency src="DataTables-1.10.10/js/jquery.dataTables.js">DataTables</Dependency>
+				<Dependency src="DataTables/js/jquery.dataTables.min.js">DataTables</Dependency>
+			    <Dependency src="ColReorder/js/dataTables.colReorder.min.js">ColReorder</Dependency>
 				<Dependency src="Buttons/js/dataTables.buttons.js">Buttons</Dependency>
-		    	<Dependency src="Buttons/js/buttons.flash.js">Flash</Dependency>	    	
-				<Dependency src="JSZip/jszip.js">JsZip</Dependency>	
-				<Dependency src="pdfmake/build/pdfmake.js">Pdfmake</Dependency>	
+		    	<Dependency src="Buttons/js/buttons.flash.js">Flash</Dependency>
+				<Dependency src="JSZip/jszip.js">JsZip</Dependency>
+				<Dependency src="pdfmake/build/pdfmake.js">pdfmake</Dependency>
 				<Dependency src="pdfmake/build/vfs_fonts.js">vfsfonts</Dependency>
-				<Dependency src="Buttons/js/buttons.html5.js">html5</Dependency>	 
-				<Dependency src="Buttons/js/buttons.print.js">print</Dependency>	 		
-				<Dependency src="Buttons/js/buttons.colVis.js">colVis</Dependency>	 							
+				<Dependency src="Buttons/js/buttons.html5.js">html5</Dependency>
+				<Dependency src="Buttons/js/buttons.print.js">print</Dependency>
+				<Dependency src="Buttons/js/buttons.colVis.js">colVis</Dependency>
 		    </Dependencies>
-             <CustomProperties>
-				<DesignerProperty>
-					<Header>
-						<Name>pdfCustomize</Name>
-							<Parent>BaseProperty</Parent>
-							<DefaultValue></DefaultValue>
-							<Description>Customize pdf</Description>
-							<Tooltip>Function to customize the pdf</Tooltip>
-							<Advanced>false</Advanced>
-							<InputType>JavaScript</InputType>
-							<OutputType>Function</OutputType>
-							<Order>40</Order>
-							<Version>1.0</Version>
-					</Header>
-				</DesignerProperty>
+            <CustomProperties>
 				<DesignerProperty>
 					<Header>
 						    <Name>Buttons</Name>
 							<Parent>BaseProperty</Parent>
 							<DefaultValue>"[]"</DefaultValue>
-							<Description>Buttons définition</Description>
+							<Description>Buttons definition</Description>
 							<Tooltip>Define buttons with their options</Tooltip>
 							<Advanced>false</Advanced>
-							<InputType>EditorValuesArray</InputType> 
+							<InputType>EditorValuesArray</InputType>
 							<OutputType>Array</OutputType>
+							<Order>40</Order>
+							<Version>1.0</Version>
+					</Header>
+				</DesignerProperty>
+            </CustomProperties>
+			<CustomProperties>
+				<DesignerProperty>
+					<Header>
+						    <Name>ColReorder</Name>
+							<Parent>BaseProperty</Parent>
+							<DefaultValue>false</DefaultValue>
+							<Description>Reordering Columns</Description>
+							<Tooltip>Allow Reordering Columns</Tooltip>
+							<Advanced>false</Advanced>
+							<InputType>Boolean</InputType>
+							<OutputType>Boolean</OutputType>
 							<Order>40</Order>
 							<Version>1.0</Version>
 					</Header>

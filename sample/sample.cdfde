@@ -122,7 +122,7 @@
     ]
    },
    {
-    "id": "d8aa176c-3f38-87e1-fa66-f9a6288c7fc4",
+    "id": "5abc1e59-e7a7-ce3b-2a8a-a73e48309910",
     "type": "ComponentsTableWithButtons",
     "typeDesc": "table with buttons (pdf, excel,...) Component",
     "parent": "CUSTOMCOMPONENTS",
@@ -144,12 +144,12 @@
      },
      {
       "name": "oLanguage",
-      "value": "French ",
+      "value": "",
       "type": "JavaScript"
      },
      {
       "name": "Buttons",
-      "value": "[[\"pdf\",\"orientation:landscape,\\npageSize : A3,\\ntitle: Sales of January 2003\"],[\"excel\",\"title : Sales of January 2003,\\nsheetName : January 2003\"],[\"colvis\",\"\"]]",
+      "value": "[[\"pdf\",\"function(){\\n    var btn= {\\n                extend: 'pdf',\\n                exportOptions: {\\n                    columns: ':visible'\\n                },\\n                orientation:'landscape',\\n                pageSize : 'A3',\\n                title: 'Sales of January 2003',\\n                customize :function(doc,config){\\n                           doc['footer']= function(currentPage, pageCount) { return \\\"This is the page \\\" + currentPage.toString() + ' of ' + pageCount; }\\n                           } \\n            };\\n    return btn;\\n}\"],[\"excel\",\"function(){\\n    var btn={\\n                extend: 'excel',\\n                exportOptions: {\\n                    columns: ':visible'\\n                }\\n            };\\n    return btn;\\n}\"],[\"colvis\",\"\"]]",
       "type": "EditorValuesArray"
      },
      {
@@ -161,6 +161,11 @@
       "name": "colHeaders",
       "value": "[]",
       "type": "ColHeadersArray"
+     },
+     {
+      "name": "ColReorder",
+      "value": "true",
+      "type": "Boolean"
      },
      {
       "name": "colSortable",
@@ -186,11 +191,6 @@
       "name": "parameters",
       "value": "[]",
       "type": "ValuesArray"
-     },
-     {
-      "name": "pdfCustomize",
-      "value": "function(doc,config){\n    doc['footer']= function(currentPage, pageCount) { return \"This is the page \" + currentPage.toString() + ' of ' + pageCount; }\n} ",
-      "type": "JavaScript"
      },
      {
       "name": "displayLength",
@@ -420,5 +420,5 @@
    }
   ]
  },
- "filename": "/home/admin/sample.cdfde"
+ "filename": "/home/admin/sample/sample.cdfde"
 }

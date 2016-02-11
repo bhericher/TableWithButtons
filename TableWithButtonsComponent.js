@@ -1,6 +1,6 @@
 /*!
 * Copyright 2002 - 2014 Webdetails, a Pentaho company.  All rights reserved.
-* 
+*
 * This software was developed by Webdetails and is provided under the terms
 * of the Mozilla Public License, Version 2.0, or any later version. You may not use
 * this file except in compliance with the license. If you need a copy of the license,
@@ -165,9 +165,9 @@ if(jQuery.fn.DataTable != undefined && jQuery.fn.DataTable.ext != undefined) {
 
 
 var TableWithButtons = UnmanagedComponent.extend({
-  
+
   ph: undefined,
-  
+
 
   update: function() {
     if(!this.preExec()){
@@ -203,14 +203,14 @@ var TableWithButtons = UnmanagedComponent.extend({
       this.unblock();
     }
   },
-  
+
   paginatingUpdate: function() {
     var cd = this.chartDefinition;
     this.extraOptions = this.extraOptions || [];
     this.extraOptions.push(["bServerSide",true]);
     this.extraOptions.push(["bProcessing",true]);
     this.queryState.setPageSize(parseInt(cd.displayLength || 10));
-    
+
     var success = _.bind(function(values) {
       changedValues = undefined;
       if((typeof(this.postFetch)=='function')){
@@ -254,28 +254,21 @@ var TableWithButtons = UnmanagedComponent.extend({
       sortOptions.push( col + (dir == "asc" ? "A" : "D"));
     }
     this.queryState.setSortBy(sortOptions);
+
 	var allButtons=[];
 	for (var i=0;i<this.Buttons.length;i++) {
-		   
-				var curbtn = {
-					'extend' : this.Buttons[i][0]
-				};
-				if (this.Buttons[i][1].length > 0) {
-				var curlistopts=this.Buttons[i][1].replace(/(\r\n|\n|\r)/gm,"").split(',');
-					for (var j=0;j<curlistopts.length;j++) {
-						var curopt=curlistopts[j].split(':');
-						var propopt=curopt[0].replace(/\s/g, "") ;
-						var valopt = curopt[1].trimLeft().trimRight();
-						curbtn[propopt]= valopt;
-					}
-				 if ((this.Buttons[i][0] == 'pdf' || this.Buttons[i][0] == 'pdfHtml5') && this.pdfCustomize) {curbtn['customize']=this.pdfCustomize;}
+		        var curbtn={};
+				if (this.Buttons[i][1] !== '') {
+					 curbtn=this.Buttons[i][1]();
 				}
+				curbtn.extend=this.Buttons[i][0];
 				allButtons.push(curbtn);
 			}
 
-	$.fn.dataTable.Buttons.swfPath = '/pentaho/api/repos/pentaho-cdf-dd/resources/custom/components/TableWithButtons/Buttons/swf/flashExport.swf';
+	$.fn.dataTable.Buttons.swfPath = '/pentaho/api/repos/pentaho-cdf-dd/resources/custom/components/TableWithButtonsComponent/Buttons/swf/flashExport.swf';
 	$.extend(true, $.fn.dataTable.defaults, {
-		buttons : allButtons
+		buttons : allButtons,
+		colReorder: this.ColReorder
   });
     $('#' +cd["tableId"]).DataTable();
   },
@@ -320,8 +313,8 @@ var TableWithButtons = UnmanagedComponent.extend({
       callback(response);
     });
   },
-  
-  /* 
+
+  /*
    * Callback for when the table is finished drawing. Called every time there
    * is a redraw event (so not only updates, but also pagination and sorting).
    * We handle addIns and such things in here.
@@ -332,7 +325,7 @@ var TableWithButtons = UnmanagedComponent.extend({
         myself = this,
         handleAddIns = _.bind(this.handleAddIns,this);
     this.ph.find("tbody tr").each(function(row,tr){
-      /* 
+      /*
        * Reject rows that are not actually part
        * of the datatable (e.g. nested tables)
        */
@@ -343,7 +336,7 @@ var TableWithButtons = UnmanagedComponent.extend({
       $(tr).children("td").each(function(col,td){
 
           var foundAddIn = handleAddIns(dataTable, td);
-          /* 
+          /*
            * Process column format for those columns
            * where we didn't find a matching addIn
            */
@@ -364,7 +357,7 @@ var TableWithButtons = UnmanagedComponent.extend({
 
     /* Old urlTemplate code. This needs to be here for backward compatibility */
     if(cd.urlTemplate != undefined){
-      var td =$("#" + myself.htmlObject + " td:nth-child(1)"); 
+      var td =$("#" + myself.htmlObject + " td:nth-child(1)");
       td.addClass('cdfClickable');
       td.bind("click", function(e){
           var regex = new RegExp("{"+cd.parameterName+"}","g");
@@ -378,7 +371,7 @@ var TableWithButtons = UnmanagedComponent.extend({
     }
   },
 
-  /* 
+  /*
    * Handler for when the table finishes initialising. This only happens once,
    * when the table *initialises* ,as opposed to every time the table is drawn,
    * so it provides us with a good place to add the postExec callback.
@@ -388,8 +381,8 @@ var TableWithButtons = UnmanagedComponent.extend({
     this.unblock();
   },
 
-  /* 
-   * Resolve and call addIns for the given td in the context of the given 
+  /*
+   * Resolve and call addIns for the given td in the context of the given
    * dataTable. Returns true if there was an addIn and it was successfully
    * called, or false otherwise.
    */
@@ -474,12 +467,12 @@ var TableWithButtons = UnmanagedComponent.extend({
     if (json) {
       dtData.aaData = json.resultset;
     }
-    
+
     var tableClassName = dtData.tableStyle == "bootstrap" ?  'table table-striped table-bordered form-inline table-responsive' : 'tableComponent';
-  
+
     this.ph.html("<table id='" + this.htmlObject + "Table' class='" + tableClassName +"' width='100%'></table>");
 
-    /* 
+    /*
      * We'll first initialize a blank table so that we have a
      * table handle to work with while the table is redrawing
      */
@@ -490,10 +483,10 @@ var TableWithButtons = UnmanagedComponent.extend({
 
 
     myself.ph.find ('table').bind('click',function(e) {
-      if (typeof cd.clickAction === 'function' || myself.expandOnClick) { 
+      if (typeof cd.clickAction === 'function' || myself.expandOnClick) {
         var state = {},
           target = $(e.target),
-          results = myself.rawData; 
+          results = myself.rawData;
         if(!(target.parents('tbody').length)) {
           return;
         } else if (target.get(0).tagName != 'TD') {
@@ -505,15 +498,15 @@ var TableWithButtons = UnmanagedComponent.extend({
         state.colIdx = position[2];
         state.rowIdx = position[0];
         state.series = results.resultset[state.rowIdx][0];
-        
+
         state.category = results.metadata[state.colIdx].colName;
         state.value =  results.resultset[state.rowIdx][state.colIdx];
-        state.colFormat = cd.colFormats[state.colIdx];           
+        state.colFormat = cd.colFormats[state.colIdx];
 
-          
+
         state.target = target;
 
-        
+
         if ( myself.expandOnClick ) {
         	myself.handleExpandOnClick(state);
         }
@@ -545,7 +538,7 @@ var TableWithButtons = UnmanagedComponent.extend({
           htmlContent = $("#" + detailContainerObj).html(),
           anOpen = myself.dataTable.anOpen,
           i = $.inArray( row, anOpen );
-      
+
       if( obj.hasClass(activeclass) ){
         obj.removeClass(activeclass);
         myself.dataTable.fnClose( row );
@@ -567,7 +560,7 @@ var TableWithButtons = UnmanagedComponent.extend({
         //Read parameters and fire changes
         var results = myself.queryState.lastResults();
         $(myself.expandParameters).each(function f(i, elt) {
-          Dashboards.fireChange(elt[1], results.resultset[event.rowIdx][parseInt(elt[0],10)]);              
+          Dashboards.fireChange(elt[1], results.resultset[event.rowIdx][parseInt(elt[0],10)]);
         });
 
       };
@@ -585,7 +578,7 @@ var TableWithButtons = UnmanagedComponent.extend({
 {
   getDataTableOptions : function(options) {
     var dtData = {};
-	
+
     if(options.tableStyle == "themeroller"){
       dtData.bJQueryUI = true;
     }
@@ -595,24 +588,26 @@ var TableWithButtons = UnmanagedComponent.extend({
     dtData.bPaginate = options.paginate;
     dtData.bSort = options.sort;
     dtData.bFilter = options.filter;
-    dtData.sPaginationType = options.paginationType;   
+    dtData.sPaginationType = options.paginationType;
     dtData.aaSorting = options.sortBy;
     dtData.tableStyle = options.tableStyle;
-	
-	//sDom configurations, need for booststrap layout    
+
+	//sDom configurations, need for booststrap layout
     if (typeof options.sDom == "string"){
         dtData.sDom = options.sDom;//TODO: er...
     }
       else {
         dtData.sDom = "B<'clear'>lfrtip<'row'<'col-xs-6'><'col-xs-6'>><'row'<'col-xs-6'><'col-xs-6'>>";
     }
-   if (typeof options.oLanguage == "string"){var urllang="/pentaho/api/repos/pentaho-cdf-dd/resources/custom/components/TableWithButtons/i18n/"+options.oLanguage.trim()+".json";
+
+   if (typeof options.oLanguage == "string"){var urllang="/pentaho/api/repos/pentaho-cdf-dd/resources/custom/components/TableWithButtonsComponent/i18n/"+options.oLanguage.trim()+".json";
       $.ajax({
                 url: urllang,
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    dtData.oLanguage = eval(data);
+                   // dtData.oLanguage = eval(data);
+				   dtData.oLanguage = data;
                 },
 				error: function (xhr, ajaxOptions, thrownError) {
 						alert(xhr.status);
@@ -625,9 +620,9 @@ var TableWithButtons = UnmanagedComponent.extend({
     else {
       dtData.oLanguage = options.oLanguage;
     }
-	
-	
-	
+
+
+
 	if (typeof options.oColVis == "string"){
         dtData.oColVis = eval("(" + options.oColVis + ")");//TODO: er...
     }
