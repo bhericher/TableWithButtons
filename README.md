@@ -23,17 +23,16 @@ biserver-ce/pentaho-solutions/system/pentaho-cdf-dd/resources/custom/components/
 
 * Buttons definition : define the buttons. This is an array. The first column is the name of the button (pdf, colvis,...). The second one is a function describing the button :
 For example :
-function(){
-  var btn={
-  title : 'My report',
-  orientation: 'landscape',
-  pageSize : 'A5'
-  }
-  return btn;
-}
 
+      function(){
+        var btn={
+        title : 'My report',
+        orientation: 'landscape',
+        pageSize : 'A5'
+        }
+        return btn;
+      }
 
-```
 * ColReorder : allows to reorder the columns (default : False)
 
 * sDom : by default,'Bfrtip' (see Datatables for the syntax)
